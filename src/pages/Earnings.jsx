@@ -83,7 +83,7 @@ function Earnings() {
             </div>
           ) : (
             <div className="no-data-message">
-              <p>😿 Belum ada transaksi pendapatan.</p>
+              <p>😔 Belum ada transaksi pendapatan.</p>
             </div>
           )}
         </div>
@@ -98,7 +98,7 @@ function Earnings() {
             </div>
             <div className="info-row">
               <span className="info-label">Nomor Rekening</span>
-              <span className="info-value">••••••••1234</span>
+              <span className="info-value">••••••••••1234</span>
             </div>
             <div className="info-row">
               <span className="info-label">Nama Pemegang</span>

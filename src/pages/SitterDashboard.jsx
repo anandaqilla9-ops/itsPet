@@ -112,7 +112,7 @@ function SitterDashboard() {
 
           {/* Skills Section */}
           <div className="sitter-info-section">
-            <h2>🎯 Keahlian / Layanan</h2>
+            <h2>🏄 Keahlian / Layanan</h2>
             <div className="sitter-skills-display">
               {currentUser.skills && currentUser.skills.length > 0 ? (
                 currentUser.skills.map((skill, idx) => (
@@ -153,7 +153,7 @@ function SitterDashboard() {
           {/* Action Buttons */}
           <div className="sitter-action-buttons">
             <button onClick={() => navigate("/sitter-bookings")} className="action-btn primary">
-              📥 Kelola Booking
+              📬 Kelola Booking
             </button>
             <button onClick={() => navigate("/sitter-monitoring")} className="action-btn primary">
               📸 Update Hewan

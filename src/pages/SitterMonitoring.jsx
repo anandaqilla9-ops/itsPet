@@ -124,7 +124,7 @@ function SitterMonitoring() {
             ))
           ) : (
             <div className="no-data-message">
-              <p>😿 Belum ada update foto. Mulai upload foto hewan peliharaan!</p>
+              <p>😔 Belum ada update foto. Mulai upload foto hewan peliharaan!</p>
             </div>
           )}
         </div>

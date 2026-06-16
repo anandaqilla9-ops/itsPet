@@ -48,7 +48,7 @@ function SitterBookings() {
           ← Kembali
         </button>
 
-        <h1>📥 Kelola Booking</h1>
+        <h1>📬 Kelola Booking</h1>
         <p style={{ color: "#666", marginBottom: "30px" }}>Terima atau tolak permintaan booking dari pawrent.</p>
 
         {/* Filter Tabs */}
@@ -152,7 +152,7 @@ function SitterBookings() {
             ))
           ) : (
             <div className="no-data-message">
-              <p>😿 Tidak ada booking {filterStatus !== "all" ? `dengan status "${filterStatus}"` : ""}.</p>
+              <p>😔 Tidak ada booking {filterStatus !== "all" ? `dengan status "${filterStatus}"` : ""}.</p>
             </div>
           )}
         </div>

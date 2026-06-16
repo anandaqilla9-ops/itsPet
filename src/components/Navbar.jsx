@@ -59,10 +59,9 @@ function Navbar() {
             </Link>
           </>
         ) : isSitter ? (
-          {/* SITTER NAVBAR */}
           <>
             <Link to="/sitter-dashboard" className="nav-link-text">📊 Dashboard</Link>
-            <Link to="/sitter-bookings" className="nav-link-text">📥 Booking</Link>
+            <Link to="/sitter-bookings" className="nav-link-text">📬 Booking</Link>
             <Link to="/sitter-monitoring" className="nav-link-text">📸 Monitoring</Link>
             <Link to="/earnings" className="nav-link-text">💰 Pendapatan</Link>
             <div className="profile-dropdown-container">
@@ -94,7 +93,6 @@ function Navbar() {
             </div>
           </>
         ) : (
-          {/* PAWRENT NAVBAR */}
           <>
             <a href="/#services">Layanan</a>
             <a href="/#reviews">Ulasan</a>
