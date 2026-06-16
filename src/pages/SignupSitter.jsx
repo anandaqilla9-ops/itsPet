@@ -58,7 +58,11 @@ function SignupSitter() {
       password,
       role: "sitter",
       avatar,
-      rating: "5.0" // dummy rating for newly registered sitters
+      rating: "5.0", // dummy rating for newly registered sitters
+      verificationStatus: "Menunggu Interview",
+      priceText: "Rp 50.000 / kunjungan", // Default dummy price for new sitter
+      price: 50000,
+      availableSlots: ["09:00 - 12:00", "13:00 - 16:00"] // Default dummy slots
     };
 
     localStorage.setItem("registeredUser", JSON.stringify(userData));
@@ -130,6 +134,15 @@ function SignupSitter() {
                     onChange={(e) => handleSkillChange("🐶 Anjing", e.target.checked)}
                   />
                   🐶 Anjing
+                </label>
+
+                <label>
+                  <input 
+                    type="checkbox" 
+                    checked={skills.includes("🐭 Small Mammals")}
+                    onChange={(e) => handleSkillChange("🐭 Small Mammals", e.target.checked)}
+                  />
+                  🐭 Small Mammals
                 </label>
 
                 <label>

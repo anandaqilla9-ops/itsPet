@@ -37,8 +37,25 @@ function SitterDetail() {
 
           <div className="detail-right">
             <div className="detail-header">
-              <h1>{sitter.name}</h1>
-              <span className="detail-badge">📍 {sitter.location}</span>
+              <h1>
+                {sitter.name}
+                {sitter.verificationStatus === "Terverifikasi" && (
+                  <span style={{ fontSize: '18px', marginLeft: '10px' }} title="Terverifikasi">✅</span>
+                )}
+              </h1>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                <span className="detail-badge">📍 {sitter.location}</span>
+                <span style={{ 
+                  background: sitter.verificationStatus === "Terverifikasi" ? "#E8F5E9" : "#FFF3E0", 
+                  color: sitter.verificationStatus === "Terverifikasi" ? "#2E7D32" : "#E65100", 
+                  padding: "4px 10px", 
+                  borderRadius: "15px", 
+                  fontSize: "13px", 
+                  fontWeight: "bold" 
+                }}>
+                  {sitter.verificationStatus || "Menunggu Interview"}
+                </span>
+              </div>
             </div>
 
             <div className="detail-meta">
@@ -60,15 +77,49 @@ function SitterDetail() {
               </div>
             </div>
 
+            <div className="detail-schedules" style={{ marginTop: "20px" }}>
+              <h3>Jadwal Tersedia</h3>
+              <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "10px" }}>
+                {(sitter.availableSlots || ["Setiap Saat"]).map((slot, idx) => (
+                  <span key={idx} style={{ 
+                    background: "#E3F2FD", 
+                    color: "#1565C0", 
+                    padding: "6px 12px", 
+                    borderRadius: "8px", 
+                    fontSize: "14px",
+                    border: "1px solid #BBDEFB"
+                  }}>
+                    {slot}
+                  </span>
+                ))}
+              </div>
+            </div>
+
             <div className="detail-price-section">
               <div className="price-info">
                 <span className="price-label">Tarif Kunjungan</span>
                 <h2 className="price-amount">{sitter.priceText}</h2>
               </div>
               
-              <button onClick={handleBooking} className="booking-btn">
-                Booking Sekarang
-              </button>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <button onClick={handleBooking} className="booking-btn">
+                  Booking Sekarang
+                </button>
+                <button 
+                  onClick={() => navigate("/chat", { state: { sitter } })} 
+                  style={{ 
+                    padding: '12px 20px', 
+                    background: 'white', 
+                    color: '#3674B5', 
+                    border: '1px solid #3674B5', 
+                    borderRadius: '25px', 
+                    fontSize: '16px', 
+                    fontWeight: '600', 
+                    cursor: 'pointer' 
+                  }}>
+                  💬 Chat Sekarang
+                </button>
+              </div>
             </div>
           </div>
         </div>

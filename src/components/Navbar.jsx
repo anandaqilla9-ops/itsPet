@@ -89,6 +89,24 @@ function Navbar() {
                     🚪 Keluar
                   </button>
                 </div>
+        {(!currentUser || currentUser.role !== "sitter") && (
+          <>
+            <a href="/#services">Layanan</a>
+            <a href="/#reviews">Ulasan</a>
+          </>
+        )}
+
+        {isLoggedIn && currentUser ? (
+          <div className="profile-dropdown-container">
+            <div className="profile-avatar" onClick={() => setShowDropdown(!showDropdown)}>
+              {currentUser.avatar ? (
+                <img 
+                  src={currentUser.avatar} 
+                  alt={currentUser.name} 
+                  style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} 
+                />
+              ) : (
+                <span className="avatar-letter">{currentUser.name ? currentUser.name[0].toUpperCase() : "U"}</span>
               )}
             </div>
           </>

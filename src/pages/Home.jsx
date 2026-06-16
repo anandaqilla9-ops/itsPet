@@ -6,6 +6,7 @@ import ServiceCard from "../components/ServiceCard";
 import SitterCard from "../components/SitterCard";
 import ReviewCard from "../components/ReviewCard";
 import Footer from "../components/Footer";
+import SitterDashboard from "./SitterDashboard";
 import { sitters } from "../data/sitters";
 
 import review1 from "../assets/review1.jpg";
@@ -14,6 +15,10 @@ import review3 from "../assets/review3.jpg";
 
 function Home() {
   const { hash } = useLocation();
+
+  const currentUserStr = localStorage.getItem("currentUser");
+  const currentUser = currentUserStr ? JSON.parse(currentUserStr) : null;
+  const isSitter = currentUser?.role === "sitter";
 
   useEffect(() => {
     if (hash) {
@@ -27,6 +32,10 @@ function Home() {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }, [hash]);
+
+  if (isSitter) {
+    return <SitterDashboard />;
+  }
 
   return (
     <>

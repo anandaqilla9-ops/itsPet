@@ -18,6 +18,7 @@ import SitterDashboard from "./pages/SitterDashboard"
 import SitterBookings from "./pages/SitterBookings"
 import SitterMonitoring from "./pages/SitterMonitoring"
 import Earnings from "./pages/Earnings"
+import SitterReviews from "./pages/SitterReviews"
 import ProtectedRoute from "./components/ProtectedRoute"
 import RoleProtectedRoute from "./components/RoleProtectedRoute"
 
@@ -156,6 +157,15 @@ function App() {
 
       {/* Catch all */}
       <Route path="*" element={<Navigate to="/" replace />} />
+
+      <Route 
+        path="/sitter-reviews" 
+        element={
+          <ProtectedRoute>
+            <SitterReviews />
+          </ProtectedRoute>
+        } 
+      />
 
     </Routes>
   )
