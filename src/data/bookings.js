@@ -8,7 +8,7 @@ export const dummyBookings = [
     date: "2026-06-20",
     time: "14:00",
     notes: "Kelinci yang agak pemalu, butuh makanan basah jam 3 sore.",
-    status: "pending", // pending, accepted, rejected, completed
+    status: "pending",
     totalPrice: 50000,
     createdAt: "2026-06-16T10:30:00Z"
   },

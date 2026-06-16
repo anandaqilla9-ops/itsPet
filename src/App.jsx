@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom"
+import { Routes, Route, Navigate } from "react-router-dom"
 
 import Home from "./pages/Home"
 import Login from "./pages/Login"
@@ -14,7 +14,12 @@ import Chat from "./pages/Chat"
 import Monitoring from "./pages/Monitoring"
 import VerifiedSitters from "./pages/VerifiedSitters"
 import Loyalty from "./pages/Loyalty"
+import SitterDashboard from "./pages/SitterDashboard"
+import SitterBookings from "./pages/SitterBookings"
+import SitterMonitoring from "./pages/SitterMonitoring"
+import Earnings from "./pages/Earnings"
 import ProtectedRoute from "./components/ProtectedRoute"
+import RoleProtectedRoute from "./components/RoleProtectedRoute"
 
 function App() {
   return (
@@ -36,12 +41,13 @@ function App() {
         element={<SignupSitter />}
       />
 
+      {/* PAWRENT ROUTES */}
       <Route
         path="/search"
         element={
-          <ProtectedRoute>
+          <RoleProtectedRoute allowedRoles={["pawrent"]}>
             <Search />
-          </ProtectedRoute>
+          </RoleProtectedRoute>
         }
       />
 
@@ -57,12 +63,79 @@ function App() {
       <Route
         path="/booking"
         element={
-          <ProtectedRoute>
+          <RoleProtectedRoute allowedRoles={["pawrent"]}>
             <Booking />
-          </ProtectedRoute>
+          </RoleProtectedRoute>
         }
       />
 
+      <Route
+        path="/chat"
+        element={
+          <RoleProtectedRoute allowedRoles={["pawrent"]}>
+            <Chat />
+          </RoleProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/monitoring"
+        element={
+          <RoleProtectedRoute allowedRoles={["pawrent"]}>
+            <Monitoring />
+          </RoleProtectedRoute>
+        }
+      />
+
+      <Route path="/verified-sitters" element={<VerifiedSitters />} />
+
+      <Route
+        path="/loyalty"
+        element={
+          <RoleProtectedRoute allowedRoles={["pawrent"]}>
+            <Loyalty />
+          </RoleProtectedRoute>
+        }
+      />
+
+      {/* SITTER ROUTES */}
+      <Route
+        path="/sitter-dashboard"
+        element={
+          <RoleProtectedRoute allowedRoles={["sitter"]}>
+            <SitterDashboard />
+          </RoleProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/sitter-bookings"
+        element={
+          <RoleProtectedRoute allowedRoles={["sitter"]}>
+            <SitterBookings />
+          </RoleProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/sitter-monitoring"
+        element={
+          <RoleProtectedRoute allowedRoles={["sitter"]}>
+            <SitterMonitoring />
+          </RoleProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/earnings"
+        element={
+          <RoleProtectedRoute allowedRoles={["sitter"]}>
+            <Earnings />
+          </RoleProtectedRoute>
+        }
+      />
+
+      {/* SHARED ROUTES */}
       <Route
         path="/profile"
         element={
@@ -81,34 +154,8 @@ function App() {
         }
       />
 
-      <Route
-        path="/chat"
-        element={
-          <ProtectedRoute>
-            <Chat />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/monitoring"
-        element={
-          <ProtectedRoute>
-            <Monitoring />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route path="/verified-sitters" element={<VerifiedSitters />} />
-
-      <Route
-        path="/loyalty"
-        element={
-          <ProtectedRoute>
-            <Loyalty />
-          </ProtectedRoute>
-        }
-      />
+      {/* Catch all */}
+      <Route path="*" element={<Navigate to="/" replace />} />
 
     </Routes>
   )
