@@ -68,7 +68,14 @@ function Login() {
     localStorage.setItem("isLoggedIn", "true");
     localStorage.setItem("currentUser", JSON.stringify(userData));
 
-    navigate(from.pathname, { state: from.state, replace: true });
+    if (from.pathname === "/") {
+      navigate("/profile")
+    } else {
+      navigate(from.pathname, {
+        state: from.state,
+        replace: true
+      })
+    }
   };
 
   return (
