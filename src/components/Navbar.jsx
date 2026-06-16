@@ -54,15 +54,80 @@ return (
       <>
         {isSitter ? (
           <>
-            <Link to="/sitter-dashboard">📊 Dashboard</Link>
-            <Link to="/sitter-bookings">📬 Booking</Link>
-            <Link to="/sitter-monitoring">📸 Monitoring</Link>
-            <Link to="/earnings">💰 Pendapatan</Link>
-          </>
-        ) : (
-          <>
             <a href="/#services">Layanan</a>
             <a href="/#reviews">Ulasan</a>
+            <Link to="/login">
+              <button className="login-btn">
+                Login
+              </button>
+            </Link>
+          </>
+        ) : isSitter ? (
+          <>
+            <Link to="/sitter-dashboard" className="nav-link-text">📊 Dashboard</Link>
+            <Link to="/sitter-bookings" className="nav-link-text">📬 Booking</Link>
+            <Link to="/sitter-monitoring" className="nav-link-text">📸 Monitoring</Link>
+            <Link to="/earnings" className="nav-link-text">💰 Pendapatan</Link>
+            <div className="profile-dropdown-container">
+              <div className="profile-avatar" onClick={() => setShowDropdown(!showDropdown)}>
+                {currentUser?.avatar ? (
+                  <img
+                    src={currentUser.avatar}
+                    alt={currentUser.name}
+                    style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }}
+                  />
+                ) : (
+                  <span className="avatar-letter">{currentUser?.name ? currentUser.name[0].toUpperCase() : "U"}</span>
+                )}
+              </div>
+
+              {showDropdown && (
+                <div className="dropdown-menu">
+                  <Link to="/profile" onClick={() => setShowDropdown(false)}>
+                    👤 Profil Saya
+                  </Link>
+                  <Link to="/edit-profile" onClick={() => setShowDropdown(false)}>
+                    ✏️ Edit Profil
+                  </Link>
+                  <button onClick={handleLogout} className="logout-dropdown-btn">
+                    🚪 Keluar
+                  </button>
+                </div>
+              )}
+            </div>
+          </>
+        ) : (
+          // Regular logged-in user (client)
+          <>
+            <Link to="/bookings" className="nav-link-text">📬 Booking</Link>
+            <Link to="/monitoring" className="nav-link-text">📸 Monitoring</Link>
+            <div className="profile-dropdown-container">
+              <div className="profile-avatar" onClick={() => setShowDropdown(!showDropdown)}>
+                {currentUser?.avatar ? (
+                  <img
+                    src={currentUser.avatar}
+                    alt={currentUser.name}
+                    style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }}
+                  />
+                ) : (
+                  <span className="avatar-letter">{currentUser?.name ? currentUser.name[0].toUpperCase() : "U"}</span>
+                )}
+              </div>
+              
+              {showDropdown && (
+                <div className="dropdown-menu">
+                  <Link to="/profile" onClick={() => setShowDropdown(false)}>
+                    👤 Profil Saya
+                  </Link>
+                  <Link to="/edit-profile" onClick={() => setShowDropdown(false)}>
+                    ✏️ Edit Profil
+                  </Link>
+                  <button onClick={handleLogout} className="logout-dropdown-btn">
+                    🚪 Keluar
+                  </button>
+                </div>
+              )}
+            </div>
           </>
         )}
 
