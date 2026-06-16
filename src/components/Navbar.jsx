@@ -1,40 +1,4 @@
-import { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import logo from "../assets/logo.png";
-
-function Navbar() {
-const location = useLocation();
-const navigate = useNavigate();
-const isHome = location.pathname === "/";
-
-const [isLoggedIn, setIsLoggedIn] = useState(false);
-const [currentUser, setCurrentUser] = useState(null);
-const [showDropdown, setShowDropdown] = useState(false);
-
-useEffect(() => {
-const logged = localStorage.getItem("isLoggedIn") === "true";
-setIsLoggedIn(logged);
-
-```
-if (logged) {
-  const userStr = localStorage.getItem("currentUser");
-  setCurrentUser(userStr ? JSON.parse(userStr) : null);
-} else {
-  setCurrentUser(null);
-}
-```
-
-}, [location.pathname]);
-
-const handleLogout = () => {
-localStorage.removeItem("isLoggedIn");
-localStorage.removeItem("currentUser");
-setShowDropdown(false);
-navigate("/");
-};
-
-const isSitter = currentUser?.role?.toLowerCase() === "sitter";
-
+0e19198e888a4c4f6347b301b251752cafce998e
 return (
 <nav className={`navbar ${isHome ? "" : "solid"}`}>
 <Link to="/" className="logo-container" style={{ textDecoration: "none" }}> <img src={logo} alt="it'sPet" className="logo-img" /> <span className="logo-text">it'sPet</span> </Link>
