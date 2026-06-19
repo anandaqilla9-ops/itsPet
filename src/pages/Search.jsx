@@ -9,6 +9,40 @@ function Search() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedPet, setSelectedPet] = useState("all");
   const [filteredSitters, setFilteredSitters] = useState(sitters);
+  const [userCoords, setUserCoords] = useState(null);
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setUserCoords({
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude
+          });
+        },
+        (err) => console.log("Geolocation error:", err)
+      );
+    }
+  }, []);
+
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Radius of the earth in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  };
+
+  const getSitterDistance = (sitter) => {
+    if (userCoords && sitter.lat && sitter.lng) {
+      return calculateDistance(userCoords.lat, userCoords.lng, sitter.lat, sitter.lng);
+    }
+    return sitter.distance || 0;
+  };
 
   useEffect(() => {
     const filtered = sitters.filter(sitter => {
@@ -26,7 +60,9 @@ function Search() {
   }, [searchTerm, selectedPet]);
 
   const handleViewDetail = (sitter) => {
-    navigate("/sitter-detail", { state: { sitter } });
+    const distanceVal = getSitterDistance(sitter);
+    const updatedSitter = { ...sitter, distance: parseFloat(distanceVal.toFixed(1)) };
+    navigate("/sitter-detail", { state: { sitter: updatedSitter } });
   };
 
   return (
@@ -37,9 +73,9 @@ function Search() {
         <button onClick={() => navigate(-1)} className="back-btn">
           ← Kembali
         </button>
-
+ 
         <h1>Cari Pet Sitter</h1>
-
+ 
         <div className="search-filter-container" style={{ maxWidth: "800px", margin: "0 auto 50px" }}>
           <div className="search-bar-enhanced" style={{ display: "flex", gap: "15px", flexWrap: "wrap" }}>
             <div className="search-input-wrapper" style={{ flex: "2", minWidth: "250px", position: "relative" }}>
@@ -52,7 +88,7 @@ function Search() {
               />
               <span style={{ position: "absolute", left: "15px", top: "16px", fontSize: "16px" }}>🔍</span>
             </div>
-
+ 
             <div className="filter-select-wrapper" style={{ flex: "1", minWidth: "180px", position: "relative" }}>
               <select
                 value={selectedPet}
@@ -62,6 +98,7 @@ function Search() {
                 <option value="all">🐱🐶 Semua Hewan</option>
                 <option value="kucing">🐱 Kucing</option>
                 <option value="anjing">🐶 Anjing</option>
+                <option value="mammal">🐭 Small Mammals</option>
               </select>
               <span style={{ position: "absolute", left: "15px", top: "16px", fontSize: "16px" }}>🐾</span>
             </div>
@@ -75,7 +112,7 @@ function Search() {
                 <img src={sitter.image} alt={sitter.name} />
                 <div className="search-card-info">
                   <h3>{sitter.name}</h3>
-                  <p className="sitter-location">📍 {sitter.location} • {sitter.experience} pengalaman</p>
+                  <p className="sitter-location">📍 {sitter.location} ({getSitterDistance(sitter).toFixed(1)} km) • {sitter.experience} pengalaman</p>
                   <p className="sitter-rating">⭐ {sitter.rating}</p>
                   <div className="sitter-skills">
                     {sitter.skills.map((skill, idx) => (

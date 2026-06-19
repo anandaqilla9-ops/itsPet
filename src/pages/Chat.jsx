@@ -1,212 +1,310 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
-const dummyConversations = [
+/* ─── Dummy data for demo accounts ─── */
+const dummyPawrentConversations = [
   {
     id: 1,
-    name: "Karina",
-    avatar: "🐱",
+    sitterName: "Karina",
+    sitterAvatar: "🐱",
+    pawrentName: null, // filled at init
+    pawrentAvatar: "👤",
     lastMsg: "Kucing kamu sudah makan siang ya!",
     time: "12:30",
     messages: [
-      { id: 1, from: "sitter", text: "Halo! Saya sudah sampai di rumah kamu.", time: "09:00" },
+      { id: 1, from: "other", text: "Halo! Saya sudah sampai di rumah kamu.", time: "09:00" },
       { id: 2, from: "me", text: "Terima kasih, Karina! Tolong jaga Milo ya 🐱", time: "09:02" },
-      { id: 3, from: "sitter", text: "Siap! Milo sekarang lagi main bola wol 😄", time: "09:15" },
-      { id: 4, from: "sitter", text: "Update: Milo sudah makan pagi, porsinya habis!", time: "10:00" },
+      { id: 3, from: "other", text: "Siap! Milo sekarang lagi main bola wol 😄", time: "09:15" },
+      { id: 4, from: "other", text: "Update: Milo sudah makan pagi, porsinya habis!", time: "10:00" },
       { id: 5, from: "me", text: "Alhamdulillah, biasanya susah makannya 😅", time: "10:05" },
-      { id: 6, from: "sitter", text: "Kucing kamu sudah makan siang ya!", time: "12:30" },
+      { id: 6, from: "other", text: "Kucing kamu sudah makan siang ya!", time: "12:30" },
     ],
   },
   {
     id: 2,
-    name: "Nashwa Zahira",
-    avatar: "🐶",
+    sitterName: "Nashwa Zahira",
+    sitterAvatar: "🐶",
+    pawrentName: null,
+    pawrentAvatar: "👤",
     lastMsg: "Rocky habis jalan-jalan pagi!",
     time: "08:45",
     messages: [
-      { id: 1, from: "sitter", text: "Pagi! Rocky sudah bangun dan excited banget 🐕", time: "07:00" },
+      { id: 1, from: "other", text: "Pagi! Rocky sudah bangun dan excited banget 🐕", time: "07:00" },
       { id: 2, from: "me", text: "Haha iya dia memang paling semangat pagi-pagi!", time: "07:10" },
-      { id: 3, from: "sitter", text: "Rocky habis jalan-jalan pagi!", time: "08:45" },
+      { id: 3, from: "other", text: "Rocky habis jalan-jalan pagi!", time: "08:45" },
     ],
   },
   {
     id: 3,
-    name: "Aurelia Putri",
-    avatar: "🐰",
+    sitterName: "Aurelia Putri",
+    sitterAvatar: "🐰",
+    pawrentName: null,
+    pawrentAvatar: "👤",
     lastMsg: "Elora tidur siang dengan tenang 💤",
     time: "15:00",
     messages: [
-      { id: 1, from: "sitter", text: "Elora sehat dan aktif hari ini!", time: "09:00" },
+      { id: 1, from: "other", text: "Elora sehat dan aktif hari ini!", time: "09:00" },
       { id: 2, from: "me", text: "Syukurlah! Jangan lupa vitamin-nya ya 💊", time: "09:30" },
-      { id: 3, from: "sitter", text: "Sudah diberikan! Elora minum sendiri kok 😊", time: "09:35" },
-      { id: 4, from: "sitter", text: "Elora tidur siang dengan tenang 💤", time: "15:00" },
+      { id: 3, from: "other", text: "Sudah diberikan! Elora minum sendiri kok 😊", time: "09:35" },
+      { id: 4, from: "other", text: "Elora tidur siang dengan tenang 💤", time: "15:00" },
     ],
   },
 ];
 
 const dummySitterConversations = [
   {
-    id: 1,
-    name: "Nathania Rani",
-    avatar: "👩🏻",
+    id: 101,
+    sitterName: null, // filled at init
+    sitterAvatar: "👤",
+    pawrentName: "Nathania Rani",
+    pawrentAvatar: "👩🏻",
     lastMsg: "Terima kasih banyak!",
     time: "12:35",
     messages: [
       { id: 1, from: "me", text: "Halo! Saya sudah sampai di rumah kamu.", time: "09:00" },
-      { id: 2, from: "pawrent", text: "Terima kasih! Tolong jaga Molly ya 🐰", time: "09:02" },
+      { id: 2, from: "other", text: "Terima kasih! Tolong jaga Molly ya 🐰", time: "09:02" },
       { id: 3, from: "me", text: "Siap! Molly sekarang lagi main di tamannya 😄", time: "09:15" },
       { id: 4, from: "me", text: "Update: Molly sudah makan pagi, porsinya habis!", time: "10:00" },
-      { id: 5, from: "pawrent", text: "Alhamdulillah, makasih ya update-nya 😅", time: "10:05" },
+      { id: 5, from: "other", text: "Alhamdulillah, makasih ya update-nya 😅", time: "10:05" },
       { id: 6, from: "me", text: "Molly juga sudah saya bersihkan kandangnya ya!", time: "12:30" },
-      { id: 7, from: "pawrent", text: "Terima kasih banyak!", time: "12:35" },
+      { id: 7, from: "other", text: "Terima kasih banyak!", time: "12:35" },
     ],
   },
   {
-    id: 2,
-    name: "Aditya Rasyiid",
-    avatar: "👨🏻",
+    id: 102,
+    sitterName: null,
+    sitterAvatar: "👤",
+    pawrentName: "Aditya Rasyiid",
+    pawrentAvatar: "👨🏻",
     lastMsg: "Keren, terima kasih!",
     time: "15:05",
     messages: [
       { id: 1, from: "me", text: "Elora sehat dan aktif hari ini!", time: "09:00" },
-      { id: 2, from: "pawrent", text: "Syukurlah! Jangan lupa vitamin-nya ya 💊", time: "09:30" },
+      { id: 2, from: "other", text: "Syukurlah! Jangan lupa vitamin-nya ya 💊", time: "09:30" },
       { id: 3, from: "me", text: "Sudah diberikan! Elora minum sendiri kok 😊", time: "09:35" },
       { id: 4, from: "me", text: "Elora tidur siang dengan tenang 💤", time: "15:00" },
-      { id: 5, from: "pawrent", text: "Keren, terima kasih!", time: "15:05" },
+      { id: 5, from: "other", text: "Keren, terima kasih!", time: "15:05" },
     ],
   },
+];
+
+/* ─── Auto-reply pool for demo simulation ─── */
+const autoReplies = [
+  "Baik, terima kasih infonya! 😊",
+  "Oke siap, akan saya perhatikan 👍",
+  "Noted! Ada lagi yang perlu disampaikan?",
+  "Terima kasih sudah update ya!",
+  "Sip, saya akan kabari lagi nanti 🐾",
+  "Baik, akan saya pastikan semuanya aman 😄",
 ];
 
 function Chat() {
   const navigate = useNavigate();
   const location = useLocation();
-  
+  const messagesEndRef = useRef(null);
+  const chatMessagesRef = useRef(null);
+
   const currentUserStr = localStorage.getItem("currentUser");
   const currentUser = currentUserStr ? JSON.parse(currentUserStr) : null;
   const isSitter = currentUser?.role === "sitter";
+  const isDemo = currentUser?.isDemo === true;
 
-  // Use a global key for all conversations
-  const storageKey = "globalConversations";
+  const storageKey = `chatConversations_${currentUser?.email || "guest"}`;
 
+  /* ─── State ─── */
   const [conversations, setConversations] = useState(() => {
     const saved = localStorage.getItem(storageKey);
-    return saved ? JSON.parse(saved) : []; // start empty if none
+    if (saved) return JSON.parse(saved);
+
+    // Seed with dummy data for demo users
+    if (isDemo) {
+      if (isSitter) {
+        return dummySitterConversations.map(c => ({
+          ...c,
+          sitterName: currentUser.name,
+          sitterAvatar: currentUser.name?.[0]?.toUpperCase() || "S",
+        }));
+      } else {
+        return dummyPawrentConversations.map(c => ({
+          ...c,
+          pawrentName: currentUser.name,
+          pawrentAvatar: currentUser.name?.[0]?.toUpperCase() || "P",
+        }));
+      }
+    }
+    return [];
   });
 
   const [activeChat, setActiveChat] = useState(null);
   const [newMessage, setNewMessage] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(true);
 
-  // Determine what conversations to show based on role
-  const myConversations = conversations.filter(c => 
-    isSitter ? c.sitter?.name === currentUser?.name : c.pawrent?.name === currentUser?.name
-  );
+  /* ─── Helpers ─── */
+  const getOtherName = (conv) => isSitter ? conv.pawrentName : conv.sitterName;
+  const getOtherAvatar = (conv) => isSitter ? conv.pawrentAvatar : conv.sitterAvatar;
 
-  // Default active chat
+  const getTimeStr = () => {
+    const now = new Date();
+    return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+  };
+
+  /* ─── Persist conversations ─── */
   useEffect(() => {
-    if (myConversations.length > 0 && !activeChat) {
-      setActiveChat(myConversations[0]);
+    if (conversations.length > 0) {
+      localStorage.setItem(storageKey, JSON.stringify(conversations));
     }
-  }, [myConversations, activeChat]);
+  }, [conversations, storageKey]);
 
-  // Handle incoming sitter or pawrent from Navigation
+  /* ─── Auto-scroll to bottom ─── */
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [activeChat?.messages]);
+
+  /* ─── Handle incoming navigation state (sitter or pawrent) ─── */
   useEffect(() => {
     const targetSitter = location.state?.sitter;
     const targetPawrent = location.state?.pawrent;
     const bookingContext = location.state?.bookingContext;
 
     if (targetSitter && !isSitter) {
-      // Pawrent initiating chat with Sitter
-      const existingConv = conversations.find(c => c.sitter?.name === targetSitter.name && c.pawrent?.name === currentUser.name);
-      
-      if (existingConv) {
-        setActiveChat(existingConv);
+      // Pawrent starting chat with a sitter
+      const existing = conversations.find(c => c.sitterName === targetSitter.name);
+
+      if (existing) {
+        setActiveChat(existing);
+        setShowSidebar(false);
       } else {
         const newConv = {
           id: Date.now(),
-          sitter: targetSitter,
-          pawrent: currentUser,
-          lastMsg: "Halo! Saya ingin menggunakan jasa Anda.",
-          time: "Baru saja",
+          sitterName: targetSitter.name,
+          sitterAvatar: targetSitter.name?.[0]?.toUpperCase() || "🐾",
+          pawrentName: currentUser.name,
+          pawrentAvatar: currentUser.name?.[0]?.toUpperCase() || "P",
+          lastMsg: "Halo! Saya tertarik menggunakan jasa Anda 😊",
+          time: getTimeStr(),
           messages: [
-            { id: 1, from: currentUser.name, text: "Halo! Saya tertarik menggunakan jasa Anda.", time: "Baru saja" }
+            { id: 1, from: "me", text: "Halo! Saya tertarik menggunakan jasa Anda 😊", time: getTimeStr() }
           ]
         };
         const updated = [newConv, ...conversations];
         setConversations(updated);
         setActiveChat(newConv);
-        localStorage.setItem(storageKey, JSON.stringify(updated));
+        setShowSidebar(false);
       }
     } else if (targetPawrent && isSitter) {
-      // Sitter initiating chat with Pawrent
-      const existingConv = conversations.find(c => c.pawrent?.name === targetPawrent.name && c.sitter?.name === currentUser.name);
-      
-      if (existingConv) {
-        // optionally update context if needed, but here we just select it
+      // Sitter starting chat with a pawrent
+      const existing = conversations.find(c => c.pawrentName === targetPawrent.name);
+
+      if (existing) {
         if (bookingContext) {
-          existingConv.bookingContext = bookingContext; // attach recent booking context
+          const updated = conversations.map(c =>
+            c.id === existing.id ? { ...c, bookingContext } : c
+          );
+          setConversations(updated);
+          setActiveChat({ ...existing, bookingContext });
+        } else {
+          setActiveChat(existing);
         }
-        setActiveChat(existingConv);
+        setShowSidebar(false);
       } else {
+        const greeting = bookingContext
+          ? `Halo ${targetPawrent.name}! Pesanan untuk ${bookingContext.petName} sudah saya terima. Ada detail khusus yang perlu saya perhatikan?`
+          : `Halo ${targetPawrent.name}! Ada yang bisa saya bantu?`;
+        
         const newConv = {
           id: Date.now(),
-          sitter: currentUser,
-          pawrent: targetPawrent,
+          sitterName: currentUser.name,
+          sitterAvatar: currentUser.name?.[0]?.toUpperCase() || "S",
+          pawrentName: targetPawrent.name,
+          pawrentAvatar: targetPawrent.name?.[0]?.toUpperCase() || "P",
           bookingContext,
-          lastMsg: "Halo, pesanan Anda sudah saya terima.",
-          time: "Baru saja",
+          lastMsg: greeting,
+          time: getTimeStr(),
           messages: [
-            { id: 1, from: currentUser.name, text: "Halo, pesanan Anda sudah saya terima. Ada detail khusus?", time: "Baru saja" }
+            { id: 1, from: "me", text: greeting, time: getTimeStr() }
           ]
         };
         const updated = [newConv, ...conversations];
         setConversations(updated);
         setActiveChat(newConv);
-        localStorage.setItem(storageKey, JSON.stringify(updated));
+        setShowSidebar(false);
       }
     }
-  }, [location.state, currentUser, isSitter]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.state]);
 
-  // Persist conversations when they change
+  /* ─── Default active chat ─── */
   useEffect(() => {
-    if (conversations.length > 0) {
-      localStorage.setItem(storageKey, JSON.stringify(conversations));
+    if (conversations.length > 0 && !activeChat) {
+      setActiveChat(conversations[0]);
     }
-  }, [conversations]);
+  }, [conversations, activeChat]);
 
+  /* ─── Send message ─── */
   const handleSend = (e) => {
     e.preventDefault();
     if (!newMessage.trim() || !activeChat) return;
-
     addMessageToChat(newMessage.trim());
     setNewMessage("");
   };
 
   const addMessageToChat = (text, type = "text") => {
-    const now = new Date();
-    const timeStr = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
-
+    const timeStr = getTimeStr();
     const msg = {
       id: Date.now(),
-      from: currentUser.name,
-      text: text,
+      from: "me",
+      text,
       time: timeStr,
-      type: type
+      type,
     };
 
-    const updatedConversations = conversations.map((c) =>
+    const updatedConversations = conversations.map(c =>
       c.id === activeChat.id
-        ? { ...c, messages: [...c.messages, msg], lastMsg: type === "media" ? "📷 Foto/Video terkirim" : msg.text, time: msg.time }
+        ? {
+            ...c,
+            messages: [...c.messages, msg],
+            lastMsg: type === "media" ? "📷 Foto/Video terkirim" : text,
+            time: timeStr,
+          }
         : c
     );
 
     setConversations(updatedConversations);
-    setActiveChat(updatedConversations.find((c) => c.id === activeChat.id));
+    setActiveChat(updatedConversations.find(c => c.id === activeChat.id));
+
+    // Simulate auto-reply for demo accounts
+    if (isDemo) {
+      setIsTyping(true);
+      setTimeout(() => {
+        setIsTyping(false);
+        const reply = autoReplies[Math.floor(Math.random() * autoReplies.length)];
+        const replyTime = getTimeStr();
+        const replyMsg = {
+          id: Date.now() + 1,
+          from: "other",
+          text: reply,
+          time: replyTime,
+        };
+
+        setConversations(prev => {
+          const updated = prev.map(c =>
+            c.id === activeChat.id
+              ? { ...c, messages: [...c.messages, replyMsg], lastMsg: reply, time: replyTime }
+              : c
+          );
+          setActiveChat(updated.find(c => c.id === activeChat.id));
+          return updated;
+        });
+      }, 1500 + Math.random() * 1500);
+    }
   };
 
   const handleMediaUpload = () => {
-    // Simulate media upload
     const confirmUpload = window.confirm("Akses Kamera/Galeri: Pilih foto atau video untuk dikirim?");
     if (confirmUpload) {
       addMessageToChat("🖼️ [Foto/Video Attachment]", "media");
@@ -214,11 +312,18 @@ function Chat() {
   };
 
   const handleVoiceCall = () => {
-    alert(`Memulai Voice Call dengan ${activeChat.name}... 📞`);
+    const otherName = activeChat ? getOtherName(activeChat) : "Pengguna";
+    alert(`Memulai Voice Call dengan ${otherName}... 📞`);
   };
 
   const handleVideoCall = () => {
-    alert(`Memulai Video Call dengan ${activeChat.name}... 📹`);
+    const otherName = activeChat ? getOtherName(activeChat) : "Pengguna";
+    alert(`Memulai Video Call dengan ${otherName}... 📹`);
+  };
+
+  const selectChat = (conv) => {
+    setActiveChat(conv);
+    setShowSidebar(false);
   };
 
   return (
@@ -226,78 +331,108 @@ function Chat() {
       <Navbar />
 
       <div className="main-content">
-        <button onClick={() => navigate(-1)} className="back-btn">
-          ← Kembali
-        </button>
+        <div className="chat-page-header">
+          <button onClick={() => navigate(-1)} className="back-btn">
+            ← Kembali
+          </button>
+          {/* Mobile: toggle sidebar */}
+          <button 
+            className="chat-mobile-toggle"
+            onClick={() => setShowSidebar(!showSidebar)}
+          >
+            {showSidebar ? "💬 Chat" : "📋 Daftar Chat"}
+          </button>
+        </div>
 
         <div className="chat-container">
-          {/* Sidebar */}
-          <div className="chat-sidebar">
+          {/* ── Sidebar ── */}
+          <div className={`chat-sidebar ${showSidebar ? "show" : "hide-mobile"}`}>
             <div className="chat-sidebar-header">
               <h3>💬 Pesan</h3>
+              <span className="chat-count">{conversations.length} percakapan</span>
             </div>
             <div className="chat-list">
-              {myConversations.length === 0 ? (
-                <p style={{ padding: '20px', color: '#888', textAlign: 'center' }}>Belum ada pesan.</p>
+              {conversations.length === 0 ? (
+                <div className="chat-empty-sidebar">
+                  <span className="chat-empty-icon">💬</span>
+                  <p>Belum ada pesan</p>
+                  <span>Mulai chat dari halaman {isSitter ? "pesanan" : "pencarian sitter"}</span>
+                </div>
               ) : (
-                myConversations.map((conv) => {
-                  const targetUser = isSitter ? conv.pawrent : conv.sitter;
-                  return (
-                    <div
-                      key={conv.id}
-                      className={`chat-list-item ${activeChat?.id === conv.id ? "active" : ""}`}
-                      onClick={() => setActiveChat(conv)}
-                    >
-                      <div className="chat-list-avatar">{targetUser?.avatar || "👤"}</div>
-                      <div className="chat-list-info">
-                        <h4>{targetUser?.name}</h4>
-                        <p>{conv.lastMsg}</p>
-                      </div>
-                      <span className="chat-list-time">{conv.time}</span>
+                conversations.map((conv) => (
+                  <div
+                    key={conv.id}
+                    className={`chat-list-item ${activeChat?.id === conv.id ? "active" : ""}`}
+                    onClick={() => selectChat(conv)}
+                  >
+                    <div className="chat-list-avatar">{getOtherAvatar(conv)}</div>
+                    <div className="chat-list-info">
+                      <h4>{getOtherName(conv)}</h4>
+                      <p>{conv.lastMsg}</p>
                     </div>
-                  );
-                })
+                    <span className="chat-list-time">{conv.time}</span>
+                  </div>
+                ))
               )}
             </div>
           </div>
 
-          {/* Main Chat Area */}
-          <div className="chat-main">
+          {/* ── Main Chat Area ── */}
+          <div className={`chat-main ${!showSidebar ? "show" : "hide-mobile"}`}>
             {activeChat ? (
               <>
                 <div className="chat-main-header">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <span className="chat-main-avatar">{(isSitter ? activeChat.pawrent?.avatar : activeChat.sitter?.avatar) || "👤"}</span>
+                  <div className="chat-header-left">
+                    <span className="chat-main-avatar">{getOtherAvatar(activeChat)}</span>
                     <div>
-                      <h3>{(isSitter ? activeChat.pawrent?.name : activeChat.sitter?.name) || "Pengguna"}</h3>
+                      <h3>{getOtherName(activeChat)}</h3>
+                      <span className="chat-online-status">
+                        {isTyping ? "Sedang mengetik..." : "● Online"}
+                      </span>
                       {activeChat.bookingContext && (
-                        <span style={{ fontSize: '0.8rem', color: '#666', background: '#f1f1f1', padding: '2px 6px', borderRadius: '4px' }}>
-                          📅 {activeChat.bookingContext.date} - {activeChat.bookingContext.petName} ({activeChat.bookingContext.petType})
+                        <span className="chat-booking-badge">
+                          📅 {activeChat.bookingContext.date} — {activeChat.bookingContext.petName} ({activeChat.bookingContext.petType})
                         </span>
                       )}
                     </div>
                   </div>
-                  <div className="chat-call-actions" style={{ display: 'flex', gap: '15px', marginRight: '10px' }}>
-                    <button onClick={handleVoiceCall} title="Voice Call" style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer' }}>📞</button>
-                    <button onClick={handleVideoCall} title="Video Call" style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer' }}>📹</button>
+                  <div className="chat-call-actions">
+                    <button onClick={handleVoiceCall} title="Voice Call" className="chat-call-btn">📞</button>
+                    <button onClick={handleVideoCall} title="Video Call" className="chat-call-btn">📹</button>
                   </div>
                 </div>
 
-                <div className="chat-messages">
+                <div className="chat-messages" ref={chatMessagesRef}>
+                  {/* Date separator */}
+                  <div className="chat-date-separator">
+                    <span>Hari ini</span>
+                  </div>
+
                   {activeChat.messages.map((msg) => (
-                    <div key={msg.id} className={`chat-bubble ${msg.from === currentUser.name ? "me" : "other"}`}>
+                    <div key={msg.id} className={`chat-bubble ${msg.from === "me" ? "me" : "other"}`}>
                       <p>{msg.text}</p>
-                      <span className="chat-bubble-time">{msg.time}</span>
+                      <span className="chat-bubble-time">
+                        {msg.time} {msg.from === "me" && "✓✓"}
+                      </span>
                     </div>
                   ))}
+
+                  {isTyping && (
+                    <div className="chat-bubble other chat-typing">
+                      <div className="typing-dots">
+                        <span></span><span></span><span></span>
+                      </div>
+                    </div>
+                  )}
+                  <div ref={messagesEndRef} />
                 </div>
 
-                <form className="chat-input-area" onSubmit={handleSend} style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                  <button 
-                    type="button" 
+                <form className="chat-input-area" onSubmit={handleSend}>
+                  <button
+                    type="button"
                     onClick={handleMediaUpload}
                     title="Kirim Foto/Video"
-                    style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', padding: '0 5px' }}
+                    className="chat-attach-btn"
                   >
                     📎
                   </button>
@@ -306,14 +441,20 @@ function Chat() {
                     placeholder="Tulis pesan..."
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    style={{ flex: 1 }}
                   />
-                  <button type="submit">Kirim</button>
+                  <button type="submit" className="chat-send-btn">
+                    <span className="send-icon">➤</span>
+                    <span className="send-text">Kirim</span>
+                  </button>
                 </form>
               </>
             ) : (
-              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', color: '#888' }}>
-                <p>Pilih percakapan untuk memulai chat.</p>
+              <div className="chat-empty-state">
+                <div className="chat-empty-illustration">
+                  <span>💬</span>
+                </div>
+                <h3>Pilih percakapan</h3>
+                <p>Pilih chat dari daftar di samping atau mulai percakapan baru dari halaman {isSitter ? "pesanan" : "pencarian sitter"}.</p>
               </div>
             )}
           </div>

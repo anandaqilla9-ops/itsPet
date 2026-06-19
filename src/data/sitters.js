@@ -17,7 +17,9 @@ export const sitters = [
     reviewsCount: 24,
     verificationStatus: "Terverifikasi",
     availableSlots: ["08:00 - 10:00", "13:00 - 15:00", "18:00 - 20:00"],
-    distance: 5
+    distance: 5,
+    lat: -7.2575,
+    lng: 112.7521
   },
   {
     id: 2,
@@ -33,7 +35,9 @@ export const sitters = [
     reviewsCount: 18,
     verificationStatus: "Terverifikasi",
     availableSlots: ["09:00 - 11:00", "15:00 - 17:00"],
-    distance: 12
+    distance: 12,
+    lat: -7.4726,
+    lng: 112.6675
   },
   {
     id: 3,
@@ -49,6 +53,8 @@ export const sitters = [
     reviewsCount: 35,
     verificationStatus: "Terverifikasi",
     availableSlots: ["07:00 - 09:00", "12:00 - 14:00", "16:00 - 18:00", "19:00 - 21:00"],
-    distance: 8
+    distance: 8,
+    lat: -7.2891,
+    lng: 112.6789
   }
 ];

@@ -192,14 +192,18 @@ function SitterDashboard() {
   })();
 
   const [bookings, setBookings] = useState(() => {
+    const isDemo = currentUser?.isDemo === true;
     try {
       const all = JSON.parse(localStorage.getItem("globalBookings") || "[]");
-      const mine = all.filter(b => b.sitter?.name === currentUser?.name);
+      const mine = all.filter(b => b.sitter?.name === currentUser?.name || b.sitter?.email === currentUser?.email);
       if (mine.length > 0) return mine;
-    } catch { /* fall through to dummy */ }
+      if (!isDemo) return [];
+    } catch {
+      if (!isDemo) return [];
+    }
     return [
-      { id: 1, pawrent: { name: "Budi Santoso", address: "Jl. Sudirman No 10" }, petName: "Kitty", petType: "Kucing", date: "2026-06-18", time: "09:00", status: "Menunggu", visits: 1, notes: "Jangan lupa vitamin" },
-      { id: 2, pawrent: { name: "Raisha Annette", address: "Jl. Mawar 2" },      petName: "Rocky", petType: "Anjing",  date: "2026-06-17", time: "15:00", status: "Selesai",  visits: 2, notes: "" },
+      { id: 1, pawrent: { name: "Budi Santoso", address: "Jl. Sudirman No 10" }, petName: "Kitty", petType: "Kucing", date: "2026-06-18", time: "09:00", status: "Menunggu", visits: 1, notes: "Jangan lupa vitamin", totalPrice: 50000 },
+      { id: 2, pawrent: { name: "Raisha Annette", address: "Jl. Mawar 2" },      petName: "Rocky", petType: "Anjing",  date: "2026-06-17", time: "15:00", status: "Selesai",  visits: 2, notes: "", totalPrice: 100000 },
     ];
   });
 

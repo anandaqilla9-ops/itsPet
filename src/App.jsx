@@ -8,6 +8,7 @@ import SignupSitter from "./pages/SignupSitter"
 import Search from "./pages/Search"
 import SitterDetail from "./pages/SitterDetail"
 import Booking from "./pages/Booking"
+import BookingHistory from "./pages/BookingHistory"
 import Profile from "./pages/Profile"
 import EditProfile from "./pages/EditProfile"
 import Chat from "./pages/Chat"
@@ -71,9 +72,18 @@ function App() {
       />
 
       <Route
-        path="/chat"
+        path="/booking-history"
         element={
           <RoleProtectedRoute allowedRoles={["pawrent"]}>
+            <BookingHistory />
+          </RoleProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/chat"
+        element={
+          <RoleProtectedRoute allowedRoles={["pawrent", "sitter"]}>
             <Chat />
           </RoleProtectedRoute>
         }

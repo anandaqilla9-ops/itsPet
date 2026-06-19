@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import ServiceCard from "../components/ServiceCard";
@@ -15,10 +15,17 @@ import review3 from "../assets/review3.jpg";
 
 function Home() {
   const { hash } = useLocation();
+  const navigate = useNavigate();
 
   const currentUserStr = localStorage.getItem("currentUser");
   const currentUser = currentUserStr ? JSON.parse(currentUserStr) : null;
   const isSitter = currentUser?.role === "sitter";
+
+  useEffect(() => {
+    if (isSitter) {
+      navigate("/sitter-dashboard", { replace: true });
+    }
+  }, [isSitter, navigate]);
 
   useEffect(() => {
     if (hash) {
@@ -32,10 +39,6 @@ function Home() {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }, [hash]);
-
-  if (isSitter) {
-    return <SitterDashboard />;
-  }
 
   return (
     <>
@@ -73,9 +76,9 @@ function Home() {
 
           <ServiceCard
             icon="📅"
-            title="Booking"
-            description="Atur jadwal dengan mudah."
-            to="/booking"
+            title="Riwayat Booking"
+            description="Lihat riwayat pemesanan Anda."
+            to="/booking-history"
             requiresAuth={true}
           />
 

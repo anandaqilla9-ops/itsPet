@@ -15,7 +15,7 @@ function Profile() {
   const handleLogout = () => {
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("currentUser");
-    navigate("/");
+    window.location.href = "/";
   };
 
   const handlePasswordChange = (e) => {

@@ -27,14 +27,14 @@ function Navbar() {
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("currentUser");
     setShowDropdown(false);
-    navigate("/");
+    window.location.href = "/";
   };
 
   const isSitter = currentUser?.role === "sitter";
 
   return (
     <nav className={`navbar ${isHome ? "" : "solid"}`}>
-      <Link to="/" className="logo-container">
+      <Link to={isSitter ? "/sitter-dashboard" : "/"} className="logo-container">
         <img src={logo} alt="it'sPet" className="logo-img" />
         <span className="logo-text">it'sPet</span>
       </Link>
@@ -53,10 +53,10 @@ function Navbar() {
           <>
             {isSitter ? (
               <>
-                <Link to="/sitter-dashboard">📊 Dashboard</Link>
-                <Link to="/sitter-bookings">📬 Booking</Link>
-                <Link to="/sitter-monitoring">📸 Monitoring</Link>
-                <Link to="/earnings">💰 Pendapatan</Link>
+                <Link to="/sitter-dashboard"> Dashboard</Link>
+                <Link to="/sitter-bookings"> Booking</Link>
+                <Link to="/sitter-monitoring"> Monitoring</Link>
+                <Link to="/earnings"> Pendapatan</Link>
               </>
             ) : (
               <>
